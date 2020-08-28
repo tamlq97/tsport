@@ -1,0 +1,56 @@
+{
+   "8/RrMmQlCD2Gsp14wUCE1P8r7B2C5+yE0+g79IPyRsc=": {
+      "expiry": 1619850565.102706,
+      "mode": "force-https",
+      "sts_include_subdomains": false,
+      "sts_observed": 1588314565.102707
+   },
+   "E10e7Gwg5+phsYD4E8qNYFsQySXnIHPAfo4zloUPESc=": {
+      "expect_ct": {
+         "expect_ct_enforce": false,
+         "expect_ct_expiry": 1588919673.663201,
+         "expect_ct_observed": 1588314873.663201,
+         "expect_ct_report_uri": "https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      },
+      "expiry": 1604094873.663189,
+      "mode": "force-https",
+      "sts_include_subdomains": true,
+      "sts_observed": 1588314873.663192
+   },
+   "WhnJUA5xp3SC0QTjQcML3oDwiUqvjtbaxiBCoyx2E5c=": {
+      "expiry": 1619850877.842492,
+      "mode": "force-https",
+      "sts_include_subdomains": true,
+      "sts_observed": 1588314877.842496
+   },
+   "e3SziuwfuO2UvuBno+qkR1ObHAzZmSUoJhrc7dbP1Uo=": {
+      "expect_ct": {
+         "expect_ct_enforce": false,
+         "expect_ct_expiry": 1588919673.742169,
+         "expect_ct_observed": 1588314873.742169,
+         "expect_ct_report_uri": "https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      },
+      "expiry": 1619850873.742159,
+      "mode": "force-https",
+      "sts_include_subdomains": true,
+      "sts_observed": 1588314873.742162
+   },
+   "nAuqgR4iEWti7SOdT3UHPl6rmZU/DeaIm38P2O2OkgA=": {
+      "expiry": 1619850873.613728,
+      "mode": "force-https",
+      "sts_include_subdomains": false,
+      "sts_observed": 1588314873.613731
+   },
+   "qaDeFdT1UTirY0OQe+c5LKw+zjx6vF/+3vFh7CgrAOY=": {
+      "expect_ct": {
+         "expect_ct_enforce": false,
+         "expect_ct_expiry": 1588919676.185161,
+         "expect_ct_observed": 1588314876.185161,
+         "expect_ct_report_uri": "https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      },
+      "expiry": 1619850876.185141,
+      "mode": "force-https",
+      "sts_include_subdomains": true,
+      "sts_observed": 1588314876.185146
+   }
+}
