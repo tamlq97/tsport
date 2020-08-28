@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\ColorProductPicture;
+use App\Http\Requests\ProductImageRequest;
 use App\Http\Resources\Product\Color\Picture\PictureCollection;
 use App\Product;
+use App\Services\ColorProductPictureService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +17,15 @@ use Illuminate\Support\Facades\DB;
 
 class ColorProductPictureController extends Controller
 {
+    public static $imageExt = ['jpg', 'jpe', 'png', 'gif', 'web'];
+    public static $videoExt = ['mp4', '3gp', 'mpg', 'mpeg', 'mpv', 'ogv', 'ogg', 'flv', 'webm'];
+    /**
+     * Fetch files by Type or Id
+     * @param string $type File type
+     * @param integer $id ProductPicture Id
+     * @return object        ProductPictures list, JSON
+     */
+    // public function index($type, $id = null)
     public function index()
     {
         // return new PictureCollection(ColorProductPicture::all());
@@ -47,8 +58,7 @@ class ColorProductPictureController extends Controller
 
     /**
      * Upload new file and store it
-     * @param  Request $request Request with form data: filename and file info
-     *
+     * @param Request $request Request with form data: filename and file info
      * @return boolean          True if success, otherwise - false
      */
     public function store(Request $request)
@@ -79,7 +89,7 @@ class ColorProductPictureController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductPicture  $colorProductPicture
+     * @param \App\ProductPicture $colorProductPicture
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $product_id, $color_id)
@@ -92,9 +102,8 @@ class ColorProductPictureController extends Controller
 
     /**
      * Edit specific file
-     * @param  integer  $id      File Id
-     * @param  Request $request  Request with form data: filename
-     * d01565c38da852f65c810cb39fdf
+     * @param integer $id File Id
+     * @param Request $request Request with form data: filename
      * @return boolean           True if success, otherwise - false
      */
     public function update(ColorProductPicture $colorProductPicture, Request $request)
@@ -125,7 +134,6 @@ class ColorProductPictureController extends Controller
 
     /**
      * Delete file from disk and database
-     * @param  integer $id  File Id
      * @param integer $id File Id
      * @return boolean      True if success, otherwise - false
      */
@@ -134,17 +142,36 @@ class ColorProductPictureController extends Controller
         return response()->json(false);
     }
 
-    public function addImageForProductColor(Request $request, $product_id, $color_id)
+    public function getType($ext)
+    {
+        if (in_array($ext, self::$imageExt)) {
+            return 'image';
+        }
+        if (in_array($ext, self::$videoExt)) {
+            return 'video';
+        }
+    }
+
+    public function updateOrCreate($image)
+    {
+        $src = $image['src'] ?? $image['name'];
+        if($type = $this->getType($image['ext'])){
+            ColorProductPicture::updateOrCreate([
+                'name' => $image['name'],
+                'src' => $src,
+                'extension' => $image['ext'],
+                'type' => $type,
+                'color_id' => $image['color_id'],
+                'product_id' => $image['product_id']
+            ]);
+        }
+    }
+
+    public function addImageForProductColor(ProductImageRequest $request, $product_id, $color_id, ColorProductPictureService $colorProductPictureService)
     {
         $imageType = $request->imageType;
-        if ($imageType == 'file') {
-            $credentials = $this->validate($request, [
-                'size' => 'array|required',
-                'color_name' => 'required',
-                'image' => 'array',
-                'image.*' => 'required|mimes:jpg,jpeg,png,webp|max:20000',
-            ]);
-
+        $credentials = $request->all();
+        if ($imageType === 'file') {
             foreach ($credentials['image'] as $key => $file) {
                 $picture = new ColorProductPicture();
                 $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -153,67 +180,27 @@ class ColorProductPictureController extends Controller
                 if (!File::exists($picture->getNameDir($product_id, $color_id, $type, $name, $extension))) {
                     $picture->storeFile($file, $product_id, $color_id, $type, $name, $extension);
                 }
-                $picture::updateOrCreate([
-                    'name' => $name,
-                    'src' => $name . '.' . $extension,
-                    'type' => $type,
-                    'extension' => $extension,
-                    'color_id' => $color_id,
-                    'product_id' => $product_id
-                ]);
+                $src = $name . '.' . $extension;
+                $image = array('name' => $name, 'src' => $src,'ext' =>$extension, 'color_id' => $color_id, 'product_id' => $product_id);
+                $this->updateOrCreate($image);
             }
-
-            foreach ($credentials['size'] as $key => $size) {
-                \App\ColorSize::updateOrCreate([
-                    'color_id' => $color_id, 'name' => $size['name'],
-                ], ['color_id' => $color_id, 'name' => $size['name'], 'quantity' => 0]);
-            }
-
-            return response()->json(['message' => "Successful store image."]);
-        } else if ($imageType == 'url') {
-            $credentials = $this->validate($request, [
-                'size' => 'array|required',
-                'color_name' => 'required',
-                'image' => 'string',
-            ]);
-            $images = explode(',', $credentials['image']);
-            $images = implode('', $images);
-            $images = explode('https', $images);
+        } else if ($imageType === 'url') {
+            $images = $colorProductPictureService->getImages($credentials['image']);
             foreach ($images as $img) {
-                $temp = explode('.', $img);
-                $ext = substr($temp[count($temp) - 1], 0, 3);
-                $ext = $ext == 'jpe' ? 'jpeg' : ($ext == 'web' ? 'webp' : $ext);
-                if (in_array($ext, ['jpg', 'jpe', 'png', 'gif', 'web'])) {
-                    ColorProductPicture::updateOrCreate([
-                        'name' => $img,
-                        'src' => $img,
-                        'extension' => $ext,
-                        'type' => 'image',
-                        'color_id' => $color_id,
-                        'product_id' => $product_id
-                    ]);
-                }
-                if (in_array($ext, ['mp4'])) {
-                    ColorProductPicture::updateOrCreate([
-                        'name' => $img,
-                        'src' => $img,
-                        'extension' => $ext,
-                        'type' => 'video',
-                        'color_id' => $color_id,
-                        'product_id' => $product_id
-                    ]);
-                }
+                $ext = $colorProductPictureService->getImageExt($img);
+                $image = array('name' => $img,'ext' => $ext, 'color_id' => $color_id, 'product_id' => $product_id);
+                $this->updateOrCreate($image);
             }
-
-            foreach ($credentials['size'] as $key => $value) {
-                \App\ColorSize::updateOrCreate(
-                    ['name' => $value['name'], 'color_id' => $color_id],
-                    ['name' => $value['name'], 'color_id' => $color_id, 'quantity' => 0]
-                );
-            }
-            return response()->json(['message' => 'Successful store image!']);
         }
+        array_map(function ($value) use ($color_id) {
+            return \App\ColorSize::updateOrCreate(
+                ['name' => $value['name'], 'color_id' => $color_id],
+                ['name' => $value['name'], 'color_id' => $color_id, 'quantity' => 0]
+            );
+        }, $credentials['size']);
+        return response()->json(['message' => 'Successful store image!']);
     }
+
     public function deleteSelectedItem(Request $request)
     {
         $ids = [];

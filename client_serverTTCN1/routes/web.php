@@ -48,6 +48,9 @@ function generateRandomString($length = 10)
     return $randomString;
 }
 
+Route::get('/ordercode',function (){
+    return Order::ordercode('79aec5c')->get();
+});
 Route::get('/', function () {
     $order = Order::find(188);
     $order->load(['customer', 'detail']);

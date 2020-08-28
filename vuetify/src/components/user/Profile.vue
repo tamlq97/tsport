@@ -373,9 +373,9 @@ export default {
         email: this.user.email,
         name: this.user.name,
         avatar: this.userAvatar,
-        oldPsw: this.user.oldPsw,
-        password: this.user.password,
-        passwordConfirmation: this.user.passwordConfirmation,
+        oldPsw: this.oldPsw,
+        password: this.password,
+        passwordConfirmation: this.passwordConfirmation,
       };
       this.$store
         .dispatch("UserSingle/updateUserProfile", data)

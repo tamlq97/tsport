@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderSuccess;
 use App\Http\Resources\Order\OrderCollection;
+use App\Jobs\ProcessOrderJob;
+use App\Jobs\SendMailOrderAvailableJob;
+use App\Jobs\SendMailOrderOutOfStockJob;
 use App\Mail\NotifyOrderOutOfStockMail;
 use App\Mail\OrderConfirmed;
 use App\Mail\OrderShipped;
@@ -33,19 +36,17 @@ class OrderController extends Controller
     public function confirmOrder(Request $request, $madh)
     {
         if (Gate::denies('confirm_order')) abort(401);
-        $order = Order::where('madh', $madh)->first();
+        $order = Order::OrderCode($madh)->first();
         $order->load(['detail', 'detail.product', 'detail.product.supplier', 'customer']);
-        Log::warning("AAA", [$order->customer]);
-        Mail::to($order->customer->email)->send(new OrderConfirmed($order));
-
+        dispatch(new SendMailOrderAvailableJob($order));
         return response()->json(['message' => 'Success sent confirm order email to customer.']);
     }
     public function outOfStock(Request $request, $madh)
     {
         if (Gate::denies('order_out_of_stock')) abort(401);
-        $order = Order::where('madh', $madh)->first();
+        $order = Order::OrderCode($madh)->first();
         $order->load(['detail', 'detail.product', 'detail.product.supplier', 'customer']);
-        Mail::to($order->customer->email)->send(new NotifyOrderOutOfStockMail($order));
+        dispatch(new SendMailOrderOutOfStockJob($order));
         return response()->json(['message' => 'Success sent notify order out of stock mail to customer.']);
     }
 
@@ -113,7 +114,7 @@ class OrderController extends Controller
         }
         $data['order_date'] = $order->created_at;
         $data['madh'] = $order->madh;
-        Mail::to($data['email'])->send(new OrderShipped($data));
+        dispatch(new ProcessOrderJob($data));
         // broadcast(new OrderSuccess($order))->toOthers();
         $users = \App\User::role(['admin', 'sell employee'])->get();
         Notification::locale('vi_VN')->send($users, new OrderSuccessNotification($order));
@@ -122,7 +123,7 @@ class OrderController extends Controller
     public function delete($madh)
     {
         if (Gate::denies('delete_order')) abort(401);
-        $order = Order::where('madh', $madh)->first();
+        $order = Order::OrderCode($madh)->first();
         $order->delete();
         return response()->json(['message' => 'Success delete order.']);
     }

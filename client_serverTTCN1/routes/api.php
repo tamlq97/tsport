@@ -61,8 +61,7 @@ Route::get('getRolesAll', function () {
 
 Route::get('fetchOrders/{uid}', 'OrderController@fetchOrdersByUserID');
 
-Route::apiResource('colors', 'ColorController');
-
+Route::get('colors', 'ColorController@index');
 Route::get('sizes', 'SizeController@index');
 Route::post('login', 'AuthController@login')->name('login');
 Route::post('register', 'AuthController@register');

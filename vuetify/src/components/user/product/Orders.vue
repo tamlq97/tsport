@@ -215,9 +215,11 @@ export default {
     },
     async confirmOrder(item) {
       let order = { madh: item.madh };
-      this.$awn.success("Success sent confirm order email to customer.");
-      await this.$store.dispatch("OrderIndex/confirmOrder", order);
-      // .then(({ message }) => this.$awn.success(message));
+      const { message } = await this.$store.dispatch(
+        "OrderIndex/confirmOrder",
+        order
+      );
+      this.$awn.success(message);
     },
     viewOrderDetail(item) {
       this.viewedItem = item;
@@ -230,11 +232,11 @@ export default {
     },
 
     async outOfStock(item) {
-      this.$awn.success(
-        "Success sent notify order out of stock mail to customer."
+      const { message } = await this.$store.dispatch(
+        "OrderIndex/outOfStock",
+        item
       );
-      await this.$store.dispatch("OrderIndex/outOfStock", item);
-      // .then(({ message }) => this.$awn.success(message));
+      this.$awn.success(message);
     },
 
     close() {

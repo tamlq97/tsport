@@ -1,7 +1,4 @@
-import {
-  apiURL,
-  convertObjectToFormData
-} from "@/utils";
+import { apiURL, convertObjectToFormData } from "@/utils";
 
 function initState() {
   return {
@@ -10,194 +7,135 @@ function initState() {
       email: "",
       password: "",
       name: "",
-
-      role: []
+      role: [],
     },
     rolesAll: [],
-    loading: false
+    loading: false,
   };
 }
 
 const getters = {
-
-  user: state => state.user,
-  loading: state => state.loading,
-  rolesAll: state => state.rolesAll
+  user: (state) => state.user,
+  loading: (state) => state.loading,
+  rolesAll: (state) => state.rolesAll,
 };
 
 const actions = {
   updateUserProfile(context, data) {
     let formData = new FormData();
     convertObjectToFormData(data, formData);
-
-    formData.append("_method", 'put')
+    formData.append("_method", "put");
     return new Promise((resolve, reject) => {
-      apiURL.post(`auth/update/${data.id}`, formData)
-        .then(({
-          data
-        }) => {
-          resolve({
-            data
-          })
+      apiURL
+        .post(`auth/update/${data.id}`, formData)
+        .then(({ data }) => {
+          resolve({ data });
         })
-        .catch(({
-          response
-        }) => reject(response))
-    })
+        .catch(({ response }) => reject(response));
+    });
   },
   updateCustomerProfile(context, data) {
     let formData = new FormData();
     convertObjectToFormData(data, formData);
-
-    formData.append("_method", 'put')
+    formData.append("_method", "put");
     return new Promise((resolve, reject) => {
-      apiURL.post(`customers/${data.id}`, formData)
-        .then(({
-          data
-        }) => {
-          resolve(data)
+      apiURL
+        .post(`customers/${data.id}`, formData)
+        .then(({ data }) => {
+          resolve(data);
         })
-        .catch(({
-          response
-        }) => reject(response))
-    })
+        .catch(({ response }) => reject(response));
+    });
   },
   updateSupplierProfile(context, data) {
     let formData = new FormData();
-    convertObjectToFormData(data, formData)
-    formData.append('_method', 'put')
+    convertObjectToFormData(data, formData);
+    formData.append("_method", "put");
     return new Promise((resolve, reject) => {
-      apiURL.post(`suppliers/${data.supplier_code}`, formData)
-        .then(({
-          data
-        }) => {
-          resolve(data)
+      apiURL
+        .post(`suppliers/${data.supplier_code}`, formData)
+        .then(({ data }) => {
+          resolve(data);
         })
-        .catch(({
-          response
-        }) => reject(response))
-    })
-
+        .catch(({ response }) => reject(response));
+    });
   },
-  loginUser({
-    commit
-  }, user) {
+  loginUser({ commit }, user) {
     commit("SET_LOADING", true);
     return new Promise((resolve, reject) => {
       return apiURL
         .post("auth/login", user)
-
-        .then(res => {
-
+        .then((res) => {
           commit("SET_USER", res.data.user);
           sessionStorage.setItem("user", JSON.stringify(res.data.user));
           sessionStorage.setItem("authToken", res.data.access_token);
           sessionStorage.setItem("userLoggedIn", "logged");
-
-          let d = new Date()
-          d.setHours(d.getHours() + (res.data.expires_in / 60 / 60))
+          let d = new Date();
+          d.setHours(d.getHours() + res.data.expires_in / 60 / 60);
           sessionStorage.setItem("expires_in", d);
           resolve(res);
         })
-        .catch(err => {
-          console.log(err);
-
+        .catch((err) => {
+          console.log(err.response);
           reject(err);
         })
         .finally(() => commit("SET_LOADING", false));
     });
   },
-  registerUser({
-    commit
-  }, user) {
+  registerUser({ commit }, user) {
     commit("SET_LOADING", true);
     return new Promise((resolve, reject) => {
       return apiURL
         .post("register", user)
-        .then(({
-          data
-        }) => {
+        .then(({ data }) => {
           resolve(data);
         })
-        .catch(({
-          response
-        }) => {
+        .catch(({ response }) => {
           reject(response);
         })
         .finally(() => commit("SET_LOADING", false));
     });
   },
   // eslint-disable-next-line no-unused-vars
-  fetch({
-    commit,
-    dispatch
-  }, user) {
-    dispatch("Alert/resetState", null, {
-      root: true
-    });
+  fetch({ commit, dispatch }, user) {
+    dispatch("Alert/resetState", null, { root: true });
     return new Promise((resolve, reject) => {
       apiURL
         .get(`users/${user.id}`)
-        .then(({
-          data: {
-            data
-          }
-        }) => {
-
-          commit("SET_USER", data)
+        .then(({ data: { data } }) => {
+          commit("SET_USER", data);
           dispatch("fetchRolesAll");
-          resolve(data)
+          resolve(data);
         })
-        .catch(err => reject(err));
-    })
-
+        .catch((err) => reject(err));
+    });
   },
-  fetchRolesAll({
-    commit
-  }) {
+  fetchRolesAll({ commit }) {
     apiURL
-      .get("roles", {
-        params: {
-          showData: true
-        }
-      })
-
-      .then(res => {
+      .get("roles", { params: { showData: true } })
+      .then((res) => {
         commit("SET_ROLES_ALL", res.data);
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   },
-  store({
-    dispatch,
-    commit
-  }, user) {
+  store({ dispatch, commit }, user) {
     commit("SET_FETCHING", true);
-    dispatch("Alert/resetState", null, {
-      root: true
-    });
+    dispatch("Alert/resetState", null, { root: true });
 
     return new Promise((resolve, reject) => {
       apiURL
         .post("users", user)
-
-        .then(res => {
-          dispatch("UserIndex/fetchData", null, {
-            root: true
-          });
+        .then((res) => {
+          dispatch("UserIndex/fetchData", null, { root: true });
           resolve(res);
         })
-        .catch(error => {
-
+        .catch((error) => {
           let message = error.response.data.message || error.message;
           let errors = error.response.data.errors;
           dispatch(
-            "Alert/setAlert", {
-              message,
-              errors,
-              color: "danger"
-            }, {
-              root: true
-            }
+            "Alert/setAlert",
+            { message, errors, color: "danger" },
+            { root: true }
           );
           reject(error.response);
         })
@@ -207,137 +145,95 @@ const actions = {
 
   me() {
     return new Promise((resolve, reject) => {
-
-      apiURL.post('auth/me')
-        .then(({
-          data
-        }) => resolve(data))
-        .catch((response) => reject(response))
-    })
+      apiURL
+        .post("auth/me")
+        .then(({ data }) => resolve(data))
+        .catch((response) => reject(response));
+    });
   },
 
-  update({
-    commit,
-    dispatch
-  }, user) {
+  update({ commit, dispatch }, user) {
     commit("SET_FETCHING", true);
     return new Promise((resolve, reject) => {
       apiURL
         .put(`users/${user.id}`, user)
-
-        .then(res => {
-          dispatch("UserIndex/fetchData", null, {
-            root: true
-          });
+        .then((res) => {
+          dispatch("UserIndex/fetchData", null, { root: true });
           resolve(res);
         })
-        .catch(err => {
+        .catch((err) => {
           let message = err.response.data.message || err.message;
           let errors = err.response.data.errors;
           dispatch(
-            "Alert/setAlert", {
-              message,
-              errors,
-              color: "danger"
-            }, {
-              root: true
-            }
+            "Alert/setAlert",
+            { message, errors, color: "danger" },
+            { root: true }
           );
           reject(err);
         })
         .finally(() => commit("SET_FETCHING", false));
     });
   },
-  delete({
-    commit,
-    dispatch
-  }, user) {
+  delete({ commit, dispatch }, user) {
     commit("SET_FETCHING", true);
     return new Promise((resolve, reject) => {
       apiURL
         .delete(`users/${user.id}`, user)
-
-        .then(res => {
-          dispatch("UserIndex/fetchData", null, {
-            root: true
-          });
+        .then((res) => {
+          dispatch("UserIndex/fetchData", null, { root: true });
           resolve(res);
         })
-        .catch(err => {
-          let {
-            errors,
-            message
-          } = err.reponse.data;
-          dispatch("Alert/setAlert", {
-            errors,
-            message,
-            color: "danger"
-          });
+        .catch((err) => {
+          let { errors, message } = err.reponse.data;
+          dispatch("Alert/setAlert", { errors, message, color: "danger" });
           reject(err);
         })
         .finally(() => commit("SET_FETCHING", false));
     });
   },
-  logout({
-    commit
-  }) {
+  logout({ commit }) {
     return new Promise((resolve, reject) => {
       return apiURL
         .get("auth/logout")
-
-        .then(res => {
+        .then((res) => {
           commit("INIT_STATE");
           sessionStorage.removeItem("authToken");
           sessionStorage.removeItem("user");
           sessionStorage.removeItem("userLoggedIn");
-
-          sessionStorage.removeItem('expires_in')
-          sessionStorage.removeItem('notifyTokenExpireBefore5Minute')
+          sessionStorage.removeItem("expires_in");
+          sessionStorage.removeItem("notifyTokenExpireBefore5Minute");
           resolve(res.data);
         })
-        .catch(err => reject(err.response));
+        .catch((err) => reject(err.response));
     });
   },
-  resetState({
-    commit
-  }) {
+  resetState({ commit }) {
     commit("INIT_STATE");
   },
-  setUser({
-      commit
-    },
+  setUser(
+    { commit },
     user = {
       id: "",
       email: "",
       password: "",
       name: "",
-
-      role: []
+      role: [],
     }
   ) {
     commit("SET_USER", user);
   },
-  updateRole({
-    commit
-  }, role) {
+  updateRole({ commit }, role) {
     commit("UPDATE_ROLE", role);
   },
-  updateName({
-    commit
-  }, name) {
+  updateName({ commit }, name) {
     commit("UPDATE_NAME", name);
   },
-  updateEmail({
-    commit
-  }, email) {
+  updateEmail({ commit }, email) {
     commit("UPDATE_EMAIL", email);
   },
-  updatePassword({
-    commit
-  }, password) {
+  updatePassword({ commit }, password) {
     commit("UPDATE_PASSWORD", password);
-
-  }
+  },
 };
 
 const mutations = {
@@ -365,8 +261,7 @@ const mutations = {
   },
   UPDATE_NAME(state, name) {
     state.user.name = name;
-
-  }
+  },
 };
 
 export default {
@@ -374,6 +269,5 @@ export default {
   state: initState(),
   getters,
   actions,
-
-  mutations
+  mutations,
 };

@@ -15,7 +15,6 @@ class ColorController extends Controller
     public function index()
     {
         return Color::all();
-        // return Color::all()->pluck('name');
     }
 
     /**

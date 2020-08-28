@@ -25,4 +25,8 @@ class Order extends Model
         # code...
         return $this->hasOne('App\Payment', 'id', 'payment_id');
     }
+
+    public function scopeOrderCode($query,$madh){
+        return $query->where('madh', $madh);
+    }
 }

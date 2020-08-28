@@ -5,8 +5,6 @@
       <sourceFolder url="file://$MODULE_DIR$/../app" isTestSource="false" packagePrefix="App\" />
       <sourceFolder url="file://$MODULE_DIR$/../spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../tests" isTestSource="true" packagePrefix="Tests\" />
-<<<<<<< HEAD
-=======
       <excludeFolder url="file://$MODULE_DIR$/vendor/firebase/php-jwt" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/google/apiclient" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/google/apiclient-services" />
@@ -19,7 +17,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/cache-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-exporter" />
->>>>>>> f59e4159ddefd01565c38da852f65c810cb39fdf
       <excludeFolder url="file://$MODULE_DIR$/../vendor/asm89/stack-cors" />
       <excludeFolder url="file://$MODULE_DIR$/../vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/../vendor/dnoegel/php-xdg-base-dir" />
