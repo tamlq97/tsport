@@ -49,9 +49,6 @@ function generateRandomString($length = 10)
 }
 
 Route::get('/', function () {
-    $order = Order::find(188);
-    $order->load(['customer', 'detail']);
-    return $order;
     // $data = DB::table("customers")
     // ->whereBetween('created_at',['2020-04-31','2020-06-1'])
     // ->get();
