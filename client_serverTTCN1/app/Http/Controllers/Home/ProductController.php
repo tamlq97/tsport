@@ -62,12 +62,29 @@ class ProductController extends Controller
         $size = $request->size_name;
         $key = $request->key;
         // $query = ['length' => $length, 'category_name' => $category_name, 'parentID' => $cateParent->id, 'size' => $size];
-        $query = Product::select('products.*')
+        $query = Product::select(
+            'products.id',
+            'products.masp',
+            'products.product_name',
+            'products.product_description',
+            'products.supplier_id',
+            'products.product_price',
+            'products.available_size',
+            'products.available_colors',
+            'products.product_available',
+            'products.discount',
+            'products.discount_available',
+            'products.picture',
+            'products.slug',
+            'products.category_id',
+            'products.created_at'
+        )
             ->join('product_category as pc', 'pc.product_id', '=', 'products.id')
             ->join('sub_categories as sc', 'pc.sub_category_id', '=', 'sc.id')
             ->where('sc.category_id', '=', $cateParent->id)
-            ->where('product_available',1)
-            ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier']);
+            ->where('product_available', 1)
+            ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
+            ->groupBy('products.id');
         if ($category_name == 'all-products' || $category_name == 'view-all') {
             if ($key == 'price_asc') {
                 $query = $query->orderBy('products.product_price', 'asc')
@@ -139,7 +156,7 @@ class ProductController extends Controller
             ->leftJoin('color_sizes as cs', 'cs.color_id', '=', 'cp.id')
             // ->where('sc.slug', $query['category_name'])
             ->where('cs.name', $query['size'])
-            ->where('products.product_available',1)
+            ->where('products.product_available', 1)
             ->where('sc.category_id', $query['parentID'])
             // ->where('cs.quantity', '>', 0)
             ->orderBy('cs.quantity', 'desc')
@@ -151,10 +168,10 @@ class ProductController extends Controller
     {
         $products = Product::where('masp', 'like', '%' . $request->key . '%')
             ->orWhere('product_name', 'like', '%' . $request->key . '%')
-            ->where('products.product_available',1)
+            ->where('products.product_available', 1)
             ->orWhere('product_price', 'like', '%' . $request->key . '%')
             ->paginate(50);
-        $products->load(['colors', 'colors.pictures','supplier']);
+        $products->load(['colors', 'colors.pictures', 'supplier']);
         $response = [];
         foreach ($products as $key => $prod) {
             $data['cateName'] = $prod['categories'][0]['slug'];
@@ -202,7 +219,7 @@ class ProductController extends Controller
             ->leftJoin('sub_categories as sc', 'sc.id', '=', 'pc.sub_category_id')
             ->join('color_products as cp', 'cp.product_id', '=', 'products.id')
             ->leftJoin('color_sizes as cs', 'cs.color_id', '=', 'cp.id')
-            ->where('products.product_available',1)
+            ->where('products.product_available', 1)
             ->where('sc.slug', $query['category_name'])
             ->where('cs.name', $query['size'])
             ->where('sc.category_id', $query['parentID'])
@@ -226,7 +243,7 @@ class ProductController extends Controller
             ->join('sub_categories', 'product_category.sub_category_id', '=', 'sub_categories.id')
             ->join('categories', 'categories.id', '=', 'sub_categories.category_id')
             ->where('categories.name', '=', $type)
-            ->where('products.product_available',1)
+            ->where('products.product_available', 1)
             ->whereIn('sub_categories.id', $cateIDs)
             ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
             ->limit(15)

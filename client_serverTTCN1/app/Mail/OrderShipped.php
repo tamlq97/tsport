@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderShipped extends Mailable
+class OrderShipped extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -30,8 +30,8 @@ class OrderShipped extends Mailable
     public function build()
     {
         return $this->view('emails.orders.shipped')
-        // ->text('emails.orders.shipped_plain')
-        ->subject("VinhTrang - Notify order successful")
+            // ->text('emails.orders.shipped_plain')
+            ->subject("VinhTrang - Notify order successful")
             ->with([
                 'receiver' => $this->data['contact_fname'] . ' ' . $this->data['contact_lname'],
                 'products' => $this->data['products'],

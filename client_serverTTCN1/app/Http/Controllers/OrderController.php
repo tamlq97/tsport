@@ -37,7 +37,6 @@ class OrderController extends Controller
         $order->load(['detail', 'detail.product', 'detail.product.supplier', 'customer']);
         Log::warning("AAA", [$order->customer]);
         Mail::to($order->customer->email)->send(new OrderConfirmed($order));
-
         return response()->json(['message' => 'Success sent confirm order email to customer.']);
     }
     public function outOfStock(Request $request, $madh)
