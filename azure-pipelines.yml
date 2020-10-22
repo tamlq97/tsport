@@ -27,15 +27,15 @@ steps:
 
 
 jobs:
-  # track deployments on the environment
 - deployment: VMDeploy
   displayName: web
   pool:
     vmImage: 'Ubuntu-18.04'
-  # creates an environment if it doesn't exist
-  environment: 'doan'
+  environment:
+    name:  doan
+    resourceType: VirtualMachine
+    tags: web
   strategy:
-    # default deployment strategy, more coming...
     runOnce:
       deploy:
         steps:
