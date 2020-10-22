@@ -25,9 +25,11 @@ steps:
 - script: composer install --no-interaction --working-dir='$(system.defaultWorkingDirectory)/client_serverTTCN1' --prefer-dist 
   displayName: 'composer install'
 
-jobs:  
+jobs:
 - deployment: VMDeploy
   displayName: web
+  pool:
+    vmImage: 'Ubuntu-18.04'
   environment:
     name:  doan
     resourceType: VirtualMachine
@@ -36,4 +38,4 @@ jobs:
     runOnce:
       deploy:
         steps:
-          - script: echo my first deployment
+        - script: echo my first deployment
