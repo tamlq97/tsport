@@ -26,7 +26,7 @@ steps:
   displayName: 'composer install'
 
 jobs:
-- deployment: VMDeploy
+- job: VMDeploy
   displayName: web
   pool:
     vmImage: 'Ubuntu-18.04'
