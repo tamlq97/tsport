@@ -13,32 +13,43 @@ variables:
   phpVersion: 7.2
   serverDirectory: $(system.defaultWorkingDirectory)/client_serverTTCN1
 
-jobs:
-- deployment: VMDeploy
-  displayName: web
-  pool:
-    vmImage: 'Ubuntu-18.04'
-  environment:
-    name:  doan
-    resourceType: VirtualMachine
-    tags: web
-  strategy:
-    runOnce:
-      preDeploy:
-        steps:
-        - script: |
-            sudo update-alternatives --set php /usr/bin/php$(phpVersion)
-            sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
-            sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
-            sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
-            sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
-            php -version
-          displayName: 'Use PHP version $(phpVersion)'
+# jobs:
+# - deployment: VMDeploy
+#   displayName: web
+#   pool:
+#     vmImage: 'Ubuntu-18.04'
+#   environment:
+#     name:  doan
+#     resourceType: VirtualMachine
+#     tags: web
+#   strategy:
+#     runOnce:
+#       preDeploy:
+        # steps:
+        # - script: |
+        #     sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+        #     sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+        #     sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+        #     sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+        #     sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+        #     php -version
+        #   displayName: 'Use PHP version $(phpVersion)'
 
-        - script: composer install --no-interaction --working-dir='$(serverDirectory)' --prefer-dist 
-          displayName: 'composer install'
-      deploy:
-        steps:
-        - script: echo my first deployment
+        # - script: composer install --no-interaction --working-dir='$(serverDirectory)' --prefer-dist 
+        #   displayName: 'composer install'
+      # deploy:
+      #   steps:
+      #   - script: echo my first deployment
 
+steps:
+  - script: |
+      sudo update-alternatives --set php /usr/bin/php$(phpVersion)
+      sudo update-alternatives --set phar /usr/bin/phar$(phpVersion)
+      sudo update-alternatives --set phpdbg /usr/bin/phpdbg$(phpVersion)
+      sudo update-alternatives --set php-cgi /usr/bin/php-cgi$(phpVersion)
+      sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
+      php -version
+    displayName: 'Use PHP version $(phpVersion)'
 
+  - script: composer install --no-interaction --working-dir='$(serverDirectory)' --prefer-dist 
+    displayName: 'composer install'
