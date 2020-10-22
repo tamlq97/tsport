@@ -25,16 +25,17 @@ steps:
 - script: composer install --no-interaction --working-dir='$(system.defaultWorkingDirectory)/client_serverTTCN1' --prefer-dist 
   displayName: 'composer install'
 
+
 jobs:
-- job: VMDeploy
+  # track deployments on the environment
+- deployment: VMDeploy
   displayName: web
   pool:
     vmImage: 'Ubuntu-18.04'
-  environment:
-    name:  doan
-    resourceType: VirtualMachine
-    tags: web
+  # creates an environment if it doesn't exist
+  environment: 'doan'
   strategy:
+    # default deployment strategy, more coming...
     runOnce:
       deploy:
         steps:
