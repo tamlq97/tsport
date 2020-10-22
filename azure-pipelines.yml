@@ -24,3 +24,16 @@ steps:
 
 - script: composer install --no-interaction --working-dir='$(system.defaultWorkingDirectory)/client_serverTTCN1' --prefer-dist 
   displayName: 'composer install'
+
+jobs:  
+- deployment: VMDeploy
+  displayName: web
+  environment:
+    name:  doan
+    resourceType: VirtualMachine
+    tags: web
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+          - script: echo my first deployment
