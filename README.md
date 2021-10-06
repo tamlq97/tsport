@@ -59,6 +59,6 @@ yarn serve
 ## Test Account
 **Customer Account**: customer@gmail.com/customer@gmail.com
 
-**Admin Account**: (Admin Link)_/admin_            
+**Admin Account**: _/admin_            
 
 admin@gmail.com/admin@gmail.com
