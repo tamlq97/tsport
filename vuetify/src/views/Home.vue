@@ -24,7 +24,7 @@
             class="subtitle-1 white--text text-md-center"
           >If you thought our original Seamness was good...</v-card-subtitle>
           <v-card-actions class="justify-md-center">
-            <v-btn large :to="{path:'/collection/all-products/womens?key=newest'}" link>SHOP</v-btn>
+            <v-btn large :to="{path:'/collection/all-products/womens?key=id__desc'}" link>SHOP</v-btn>
           </v-card-actions>
         </v-img>
       </v-card>
@@ -37,7 +37,7 @@
         </v-col>
         <v-col xs="12" md="6" class='text-center' align-md="center" align-self="end">
           <v-btn text>
-            <router-link :to="{path:'/collection/all-products/womens?key=newest'}">View All</router-link>
+            <router-link :to="{path:'/collection/all-products/womens?key=id__desc'}">View All</router-link>
           </v-btn>
         </v-col>
       </v-row>
@@ -69,7 +69,7 @@
             class="text-center subtitle-1 white--text"
           >You can trust the Essentials collection like you trust your gym partner.</v-card-subtitle>
           <v-card-actions class="justify-center">
-            <v-btn large :to="{path:'/collection/all-products/mens?key=newest'}" link>SHOP</v-btn>
+            <v-btn large :to="{path:'/collection/all-products/mens?key=id__desc'}" link>SHOP</v-btn>
           </v-card-actions>
         </v-img>
       </v-card>
@@ -83,7 +83,7 @@
         </v-col>
         <v-col xs="12" class='text-center' md="6" align-md="center" align-self="end">
           <v-btn text>
-            <router-link :to="{path:'/collection/all-products/mens?key=newest'}">View All</router-link>
+            <router-link :to="{path:'/collection/all-products/mens?key=id__desc'}">View All</router-link>
           </v-btn>
         </v-col>
       </v-row>
@@ -111,7 +111,7 @@
           >
             <v-card-title class="dark--text justify-end" v-text="'SHOP MEN'"></v-card-title>
             <v-card-actions class="justify-end">
-              <v-btn large :to="{path:'/collection/all-products/mens?key=newest'}" link>SHOP</v-btn>
+              <v-btn large :to="{path:'/collection/all-products/mens?key=id__desc'}" link>SHOP</v-btn>
             </v-card-actions>
           </v-img>
         </v-card>
@@ -125,7 +125,7 @@
           >
             <v-card-title v-text="'SHOP WOMENS'"></v-card-title>
             <v-card-actions>
-              <v-btn large :to="{path:'/collection/all-products/womens?key=newest'}" link>SHOP</v-btn>
+              <v-btn large :to="{path:'/collection/all-products/womens?key=id__desc'}" link>SHOP</v-btn>
             </v-card-actions>
           </v-img>
         </v-card>

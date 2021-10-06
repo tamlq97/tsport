@@ -19,40 +19,6 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function getAllProducts(Request $request)
-    // {
-    //     $length = $request->length;
-    //     $category_name = $request->category_name;
-    //     $type = $request->type;
-    //     $cateParent = \App\Category::where('name', $type)->first();
-    //     $size = $request->size_name;
-    //     $query = ['length' => $length, 'category_name' => $category_name, 'parentID' => $cateParent->id, 'size' => $size];
-    //     if ($category_name == 'all-products' || $category_name == 'view-all') {
-    //         if ($size) {
-    //             return new ProductCollection($this->filterProductsBySize($query));
-    //         }
-    //         return new ProductCollection(
-    //             Product::select('products.*')
-    //                 ->join('product_category as pc', 'pc.product_id', '=', 'products.id')
-    //                 ->join('sub_categories as sc', 'pc.sub_category_id', '=', 'sc.id')
-    //                 ->where('sc.category_id', '=', $cateParent->id)
-    //                 ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
-    //                 ->paginate($length)
-    //         );
-    //     }
-    //     if ($size) {
-    //         return new ProductCollection($this->filterProductsBySize($query));
-    //     }
-    //     $products = Product::select('products.*')
-    //         ->join('product_category as pc', 'pc.product_id', '=', 'products.id')
-    //         ->join('sub_categories as sc', 'pc.sub_category_id', '=', 'sc.id')
-    //         ->where('sc.slug', '=', $category_name)
-    //         ->where('sc.category_id',$cateParent->id)
-    //         ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
-    //         ->paginate($length);
-    //     return new ProductCollection($products);
-    // }
-
     public function getAllProducts(Request $request)
     {
         $length = $request->length;
@@ -60,93 +26,36 @@ class ProductController extends Controller
         $type = $request->type;
         $cateParent = \App\Category::where('name', $type)->first();
         $size = $request->size_name;
-        $key = $request->key;
-        // $query = ['length' => $length, 'category_name' => $category_name, 'parentID' => $cateParent->id, 'size' => $size];
-        $query = Product::select(
-            'products.id',
-            'products.masp',
-            'products.product_name',
-            'products.product_description',
-            'products.supplier_id',
-            'products.product_price',
-            'products.available_size',
-            'products.available_colors',
-            'products.product_available',
-            'products.discount',
-            'products.discount_available',
-            'products.picture',
-            'products.slug',
-            'products.category_id',
-            'products.created_at'
-        )
+        $key = $request->key ? explode('__', $request->key) : ['id','desc']; //eg: price_asc
+        $query = ['length' => $length, 'category_name' => $category_name, 'parentID' => $cateParent->id, 'size' => $size, 'key' => $key];
+        $productsQuery = Product::select('products.*')
             ->join('product_category as pc', 'pc.product_id', '=', 'products.id')
             ->join('sub_categories as sc', 'pc.sub_category_id', '=', 'sc.id')
-            ->where('sc.category_id', '=', $cateParent->id)
-            ->where('product_available', 1)
-            ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
-            ->groupBy('products.id');
+            ->where('sc.category_id', $cateParent->id)
+            ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier']);
         if ($category_name == 'all-products' || $category_name == 'view-all') {
-            if ($key == 'price_asc') {
-                $query = $query->orderBy('products.product_price', 'asc')
-                    ->paginate($length);
-                return new ProductCollection($query);
-            }
-            if ($key == 'price_desc') {
-                $query = $query->orderBy('products.product_price', 'desc')
-                    ->paginate($length);
-                return new ProductCollection($query);
-            }
-            if ($key == 'newest') {
-                $query = $query->orderBy('created_at', 'desc')
-                    ->paginate($length);
-                return new ProductCollection($query);
-            }
             if ($size) {
-                $query = $query->join('color_products as cp', 'cp.product_id', '=', 'products.id')
-                    ->leftJoin('color_sizes as cs', 'cs.color_id', '=', 'cp.id')
-                    ->where('cs.name', $size)
-                    ->orderBy('cs.quantity', 'desc')
-                    ->paginate($length);
-                return new ProductCollection($query);
+                return new ProductCollection($this->filterProductsBySize($query));
             }
             return new ProductCollection(
-                $query->paginate($length)
+                $productsQuery
+                    ->paginate($length)
             );
         }
-        if ($key == 'price_asc') {
-            Log::warning("asc", [$key]);
-            $query = $query->where('sc.slug', $category_name)
-                ->orderBy('products.product_price', 'asc')
-                ->paginate($length);
-            return new ProductCollection($query);
-        }
-        if ($key == 'price_desc') {
-            Log::warning("desc", [$key]);
-
-            $query = $query->where('sc.slug', $category_name)
-                ->orderBy('products.product_price', 'desc')
-                ->paginate($length);
-            return new ProductCollection($query);
-        }
-        if ($key == 'newest') {
-            $query = $query->where('sc.slug', $category_name)
-                ->orderBy('created_at', 'desc')
-                ->paginate($length);
-            return new ProductCollection($query);
-        }
         if ($size) {
-            $query = $query->join('color_products as cp', 'cp.product_id', '=', 'products.id')
-                ->leftJoin('color_sizes as cs', 'cs.color_id', '=', 'cp.id')
-                ->where('sc.slug', $category_name)
-                ->where('cs.name', $size)
-                ->orderBy('cs.quantity', 'desc')
-                ->paginate($length);
-            return new ProductCollection($query);
+            return new ProductCollection($this->filterProductsBySize($query));
         }
-        $products = $query->where('sc.slug', $category_name)
+        if ($key[0] === 'popular') {
+            $productsQuery = $productsQuery->inRandomOrder();
+        } else $productsQuery = $productsQuery->orderBy($key[0], $key[1]);
+        $products =
+            $productsQuery
+            ->where('sc.slug', '=', $category_name)
             ->paginate($length);
         return new ProductCollection($products);
     }
+
+    
     public function filterProductsBySize($query)
     {
         $products = Product::select('products.*')
@@ -154,11 +63,9 @@ class ProductController extends Controller
             ->leftJoin('sub_categories as sc', 'sc.id', '=', 'pc.sub_category_id')
             ->join('color_products as cp', 'cp.product_id', '=', 'products.id')
             ->leftJoin('color_sizes as cs', 'cs.color_id', '=', 'cp.id')
-            // ->where('sc.slug', $query['category_name'])
             ->where('cs.name', $query['size'])
             ->where('products.product_available', 1)
             ->where('sc.category_id', $query['parentID'])
-            // ->where('cs.quantity', '>', 0)
             ->orderBy('cs.quantity', 'desc')
             ->with(['categories', 'colors.sizes', 'colors.pictures', 'colors', 'supplier'])
             ->paginate($query['length']);

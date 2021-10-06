@@ -68,7 +68,7 @@
                 <!-- </v-img> -->
               </v-row>
             </v-hover>
-            <div class="text-center">
+            <div class="text-center mt-5">
               <div @click="gotoProd(prod)" v-html="prod.prodName"></div>
               <div v-html="prod.color.name"></div>
               <div>${{prod.prodPrice}} USD</div>

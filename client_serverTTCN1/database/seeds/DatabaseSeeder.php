@@ -2,6 +2,7 @@
 
 use App\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -14,21 +15,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->createdPermission();
-        // $this->createRole();
-        // $this->createSuperAdmin();
-        // $this->createUser();
-        // sleep(2);
-        // $this->assignRole();
-        // $this->createColors();
-        // $this->createSizes();
-        // $this->createProduct();
+        $this->createdPermission();
+        $this->createRole();
+        $this->createSuperAdmin();
+        $this->createUser();
+        sleep(2);
+        $this->assignRole();
+        $this->createColors();
+        $this->createSizes();
+        $this->createProduct();
         $this->createCategories();
-        // $this->createSuppliers();
-        // $this->call(UsersTableSeeder::class);
+        $this->createSubCategories();
+        $this->createSuppliers();
     }
 
     public function createCategories()
+    {
+        $faker = \Faker\Factory::create();
+        DB::table('categories')->insert([
+            [
+                'name' => 'Mens',
+                'description' => $faker->paragraph(),
+                'slug' => $faker->unique()->slug
+            ],
+            [
+                'name' => 'Womens',
+                'description' => $faker->paragraph(),
+                'slug' => $faker->unique()->slug
+            ],
+            [
+                'name' => 'Accessories',
+                'description' => $faker->paragraph(),
+                'slug' => $faker->unique()->slug
+            ],
+        ]);
+    }
+
+    public function createSubCategories()
     {
         $mens = [
             'name' => 'shop by category',
@@ -124,6 +147,7 @@ class DatabaseSeeder extends Seeder
     }
     public function createUser()
     {
+        \App\User::create(['name' => 'User', 'email' => 'user@gmail.com', 'password' => \Illuminate\Support\Facades\Hash::make('user@gmail.com')]);
         factory(App\User::class, 100)->create();
     }
     public function createdPermission()
@@ -180,7 +204,7 @@ class DatabaseSeeder extends Seeder
     }
     public function createSuperAdmin()
     {
-        $admin = \App\User::create(['name' => 'Admin', 'email' => 'laquyettam1995@gmail.com', 'password' => \Illuminate\Support\Facades\Hash::make('laquyettam1995@gmail.com')]);
+        $admin = \App\User::create(['name' => 'Admin', 'email' => 'admin@gmail.com', 'password' => \Illuminate\Support\Facades\Hash::make('admin@gmail.com')]);
         $admin->syncRoles([1]);
     }
 }

@@ -199,13 +199,14 @@
         class="mx-auto hidden-md-and-up"
       >VinhTrang</v-toolbar-title>
       <div class="mx-auto hidden-sm-and-down">
-        <fragment v-for="cate in categories" :key="cate.id">
+        <template v-for="cate in categories" >
           <v-menu
             v-if="cate.name.toLowerCase() != 'accessories'"
             transition="scale-transition"
             :open-on-hover="true"
             offset-y
             nudge-width="2000"
+            :key="cate.id"
           >
             <template #activator="{ on }">
               <v-btn text class="white--text" v-on="on">
@@ -295,9 +296,10 @@
           <v-btn
             text
             v-else
+            :key="cate.id"
             @click="$route.params.type != 'accessories' ? $router.push({path:'/collection/view-all/accessories',params:{category_name:'view-all',type:'accessories'}}) : ''"
           >Accessories</v-btn>
-        </fragment>
+        </template>
       </div>
 
       <search-product />

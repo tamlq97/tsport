@@ -640,7 +640,7 @@
               </v-hover>
               <v-row>
                 <div
-                  class="subtitle-2"
+                  class="subtitle-2 mt-5"
                   @click="
                 $router.push({
                         path:`/collection/${prod.categories[0].slug}/products/${prod.slug}-${prod.color[0].name}-${prod.id}`

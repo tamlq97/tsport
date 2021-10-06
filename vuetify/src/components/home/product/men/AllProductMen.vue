@@ -34,6 +34,7 @@
       v-if="products && products.meta"
       :length="products.meta.last_page"
       :total-visible="7"
+      class='mb-10'
     ></v-pagination>
     <v-layout row wrap>
       <home-side-bar></home-side-bar>
@@ -102,7 +103,7 @@
                   <!-- </v-img> -->
                 </v-row>
               </v-hover>
-              <div class="text-center">
+              <div class="text-center mt-5">
                 <p
                   @click="
                     $router.push({

@@ -16,26 +16,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-use App\Http\Resources\Category\SubCategoryCollection;
-use App\Http\Resources\Product\Product as ProductResource;
-use App\Http\Resources\Product\ProductCollection;
-use App\SubCategory;
 use App\Supplier;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Analytics as Analytic;
-use App\Customer;
-use App\Http\Resources\Product\Color\Picture\PictureCollection;
-use App\Mail\OrderConfirmed;
 use App\Order;
-use App\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
-use Spatie\Analytics\Period;
+
 
 function generateRandomString($length = 10)
 {
@@ -120,29 +104,6 @@ Route::get('craw', function () {
     // return new ProductResource($products);
 });
 
-
-Route::post('upload', function (Request $request) {
-    // $image = $request->file('image');
-
-    // $validator = Validator::make($request->all(),[
-    //     'image' => 'required|mimetypes:video/avi,video/mp4,video/mpeg,video/quicktime'
-
-    // ]);
-    // if($validator->fails()){
-    //     return response()->json(['message'=> 'failt']);
-    // }
-    $data = [];
-    $image = $request->image;
-    $data['name'] = $image->getClientOriginalName();
-    dd($data);
-
-    // $path = $image->storeAs('products', $image->getClientOriginalName());
-    // return redirect()->back()->with('path', $path);
-})->name('upload');
-
-Route::get('slug', function () {
-    return Illuminate\Support\Str::slug('T-Shirts & Tops');
-});
 
 Route::get('assignCategoryForProduct', function () {
     $product = Product::all();

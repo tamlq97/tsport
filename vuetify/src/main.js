@@ -28,7 +28,6 @@ window.Echo = new Echo({
   },
   forceTLS:true
 })
-// Vue.use(Fragment);
 extend("email", {
   ...email,
   message: "The {_field_} not valid email format."

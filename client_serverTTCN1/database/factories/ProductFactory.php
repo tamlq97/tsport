@@ -7,6 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(\App\Product::class, function (Faker $faker) {
     return [
+        'masp'=> uniqid(),
         'product_name' => $faker->word,
         'product_price' => $faker->numberBetween(30,50),
         'product_description' => $faker->paragraph,

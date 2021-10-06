@@ -83,11 +83,6 @@
         </div>
         @endif
 
-        <form action="{{route('upload')}}" method="post" enctype="multipart/form-data">
-        {{csrf_field()}}
-            <input type="file" name="image" id="">
-            <input type="submit" value="Upload">
-        </form>
         <div class="content">
             <div class="title m-b-md">
                 Laravel

@@ -49,11 +49,11 @@ export default {
       sortBys: [
         {
           sortBy: "Price: High to Low",
-          sortKeyDir: "price_desc"
+          sortKeyDir: "product_price__desc"
         },
         {
           sortBy: "Price: Low to High",
-          sortKeyDir: "price_asc"
+          sortKeyDir: "product_price__asc"
         },
         {
           sortBy: "Popular",
@@ -61,16 +61,16 @@ export default {
         },
         {
           sortBy: "Newest",
-          sortKeyDir: "newest"
+          sortKeyDir: "id__desc"
         }
       ]
     };
   },
   created() {
-    if(this.$route.query.key == 'newest'){
+    if(this.$route.query.key == 'id__desc'){
         this.sortName = {
           sortKey:'Newest',
-          sortKeyDir:'newest'
+          sortKeyDir:'id__desc'
         }
       }
     this.$eventHub.$emit("filterKey", this.sortName.sortKeyDir);
@@ -81,10 +81,10 @@ export default {
         sortBy: "Popular",
         sortKeyDir: "popular"
       };
-      if(this.$route.query.key == 'newest'){
+      if(this.$route.query.key == 'id__desc'){
         this.sortName = {
           sortKey:'Newest',
-          sortKeyDir:'newest'
+          sortKeyDir:'id__desc'
         }
       }
       this.$eventHub.$emit("filterKey", this.sortName.sortKeyDir);

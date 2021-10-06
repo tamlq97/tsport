@@ -39,7 +39,7 @@
                 </v-row>
               </v-hover>
               <v-row>
-                <v-card-title>{{prod.prod_name}}</v-card-title>
+                <v-card-title class='mt-5'>{{prod.prod_name}}</v-card-title>
                 <v-card-subtitle>{{prod.sub_prod}}</v-card-subtitle>
                 <v-card-subtitle>${{prod.price}} USD</v-card-subtitle>
               </v-row>
