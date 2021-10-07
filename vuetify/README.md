@@ -1,24 +1,15 @@
-# vuetify
+## #Prerequisite Installed
+- [Yarn](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
+## Install
+This is the Frontend Written by **VueJS** connect to **Laravel API**.
+```
+cd ttcn_laravel_vue/vuetify
+yarn
+yarn serve
+```
+## Test Account
+**Customer Account**: customer@gmail.com/customer@gmail.com
 
-## Project setup
-```
-npm install
-```
+**Admin Account**: _/admin_            
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+admin@gmail.com/admin@gmail.com
