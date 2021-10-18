@@ -42,6 +42,6 @@ class ProductColorSizeQuantity extends Migration
      */
     public function down()
     {
-        //
+       Schema::dropIfExists('product_color_size_quantity'); 
     }
 }
